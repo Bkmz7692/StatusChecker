@@ -1,4 +1,3 @@
-# selenium 4
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
@@ -8,39 +7,16 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 import time
 import docx
+import eel
 
-"""driver = webdriver.Chrome(service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
-driver.get("https://портал-тп.рф/platform/portal/tehprisEE_profileMyMsg")
-wait1 = WebDriverWait(driver, 5)
-driver.set_window_size(1920, 1080)
-wait = WebDriverWait(driver, 5)
-email_int = driver.find_element(By.ID, "workplaceTopForm:j_mail_login")
-email_int.clear()
-email_int.send_keys("9616554994@rambler.ru")
-passw_int = driver.find_element(By.ID, "workplaceTopForm:j_password")
-passw_int.clear()
-passw_int.send_keys("Hjcctnb2021!")
-driver.find_element(By.ID, "workplaceTopForm:loginBtn").click()
-time.sleep(5) # Даем время на загрузку сайта
-#Окончание входа
-
-#Считывание данных
-status = driver.find_element(By.CLASS_NAME,"answer-status-in-list").text
-status_num = driver.find_element(By.CLASS_NAME,"item-message__next-id").text
-fio = driver.find_element(By.ID, "workplaceForm:fioLabel").text
-date = driver.find_element(By.CLASS_NAME,"item-message__option-value").text
-print(fio +" "+ status_num +" "+date +" "+ status)
-
-input()
-driver.quit()"""
-
-
-
-
-with open("passw.txt", "r") as file:
-   doc = docx.Document()
-   doc.add_heading('Статусы')
-   for item in file:
+eel.init("web")
+@eel.expose
+def send_status():
+    print("begin")
+    with open("passw.txt", "r") as file:
+     doc = docx.Document()
+    doc.add_heading('Статусы')
+    for item in file:
         
         p_list = item.split()
         print("L: "+ p_list[0]+" P: "+p_list[1])
@@ -65,9 +41,10 @@ with open("passw.txt", "r") as file:
         status_num = driver.find_element(By.CLASS_NAME,"item-message__next-id").text
         fio = driver.find_element(By.ID, "workplaceForm:fioLabel").text
         date = driver.find_element(By.CLASS_NAME,"item-message__option-value").text
-        print(fio +" "+ status_num +" "+date +" "+ status)
-        
+        status_itog = "<p>"+fio +" "+ status_num +" "+date +" "+ status+ "</p>"
+        print(status_itog)        
         stat_in_doc = doc.add_paragraph(fio +" "+ status_num +" "+date +" "+ status)
-        
         driver.quit()
-   doc.save("output.docx")        
+        doc.save("output.docx") 
+        return status_itog
+eel.start("index.html", size = (200,300))
